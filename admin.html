@@ -33,6 +33,16 @@
       </div>
       <p id="tableMessage" class="form-message"></p>
     </section>
+
+    <div id="memoModal" class="memo-modal memo-modal-hidden" role="dialog" aria-modal="true" aria-labelledby="memoModalTitle">
+      <div class="memo-modal-content">
+        <div class="memo-modal-header">
+          <h3 id="memoModalTitle">참가자 메모</h3>
+          <button id="memoModalCloseButton" type="button">닫기</button>
+        </div>
+        <ul id="memoModalList" class="memo-list"></ul>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="./js/admin.js"></script>

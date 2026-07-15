@@ -26,6 +26,7 @@ const participantNameInput = document.getElementById("participantName");
 const participantOrderInput = document.getElementById("participantOrder");
 const criteriaRoundIdSelect = document.getElementById("criteriaRoundId");
 const criteriaNameInput = document.getElementById("criteriaName");
+const criteriaDescriptionInput = document.getElementById("criteriaDescription");
 const criteriaMaxScoreInput = document.getElementById("criteriaMaxScore");
 const evaluatorNameInput = document.getElementById("evaluatorName");
 const evaluatorEmployeeIdInput = document.getElementById("evaluatorEmployeeId");
@@ -607,6 +608,7 @@ criteriaForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   const roundId = criteriaRoundIdSelect.value;
   const name = criteriaNameInput.value.trim();
+  const description = criteriaDescriptionInput.value.trim();
   const maxScore = Number(criteriaMaxScoreInput.value);
 
   if (!roundId || !name || !Number.isInteger(maxScore) || maxScore < 1) {
@@ -615,12 +617,19 @@ criteriaForm.addEventListener("submit", async (event) => {
   }
 
   try {
-    await addDoc(collection(db, "criteriaItems"), {
+    const criteriaPayload = {
       round_id: roundId,
       name,
       max_score: maxScore,
-    });
+    };
+
+    if (description) {
+      criteriaPayload.description = description;
+    }
+
+    await addDoc(collection(db, "criteriaItems"), criteriaPayload);
     criteriaNameInput.value = "";
+    criteriaDescriptionInput.value = "";
     criteriaMaxScoreInput.value = "";
     setMessage(criteriaMessage, "평가 항목을 등록했습니다.", "success");
   } catch (error) {

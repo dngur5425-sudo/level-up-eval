@@ -71,8 +71,11 @@
         <label class="field" for="criteriaRoundId">라운드 선택</label>
         <select id="criteriaRoundId" required></select>
 
-        <label class="field" for="criteriaName">항목명</label>
-        <input id="criteriaName" type="text" placeholder="예: 전달력" required>
+        <label class="field" for="criteriaName">항목명(짧게, 예: 가치창출)</label>
+        <input id="criteriaName" type="text" placeholder="예: 가치창출" required>
+
+        <label class="field" for="criteriaDescription">설명(선택, 예: 사용자의 니즈를 파악하고 이를 바탕으로 가치를 창출하려는 노력이 보이는가?)</label>
+        <textarea id="criteriaDescription" rows="3" placeholder="예: 사용자의 니즈를 파악하고 이를 바탕으로 가치를 창출하려는 노력이 보이는가?"></textarea>
 
         <label class="field" for="criteriaMaxScore">배점</label>
         <input id="criteriaMaxScore" type="number" min="1" step="1" placeholder="예: 10" required>

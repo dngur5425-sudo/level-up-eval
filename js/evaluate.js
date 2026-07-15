@@ -93,7 +93,11 @@ function renderCriteriaSliders() {
 
     const title = document.createElement("div");
     title.className = "criteria-title";
-    title.textContent = `${item.name} (최대 ${item.max_score}점)`;
+    title.textContent = `${item.name}`;
+
+    const description = document.createElement("div");
+    description.className = "criteria-description";
+    description.textContent = String(item.description ?? "").trim();
 
     const valueText = document.createElement("div");
     valueText.className = "criteria-value";
@@ -113,6 +117,9 @@ function renderCriteriaSliders() {
     });
 
     block.appendChild(title);
+    if (description.textContent) {
+      block.appendChild(description);
+    }
     block.appendChild(valueText);
     block.appendChild(slider);
     criteriaContainer.appendChild(block);

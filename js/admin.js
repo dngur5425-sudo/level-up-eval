@@ -23,6 +23,10 @@ const selectedGroupTitleElement = document.getElementById("selectedGroupTitle");
 const resultTableHeadElement = document.getElementById("resultTableHead");
 const resultTableBodyElement = document.getElementById("resultTableBody");
 const tableMessageElement = document.getElementById("tableMessage");
+const memoModal = document.getElementById("memoModal");
+const memoModalCloseButton = document.getElementById("memoModalCloseButton");
+const memoModalTitle = document.getElementById("memoModalTitle");
+const memoModalList = document.getElementById("memoModalList");
 
 let activeRound = null;
 let criteriaItems = [];
@@ -64,8 +68,73 @@ function renderHead(criteriaNames) {
       ${dynamicColumns}
       <th>합계</th>
       <th>제출 현황</th>
+      <th>메모</th>
     </tr>
   `;
+}
+
+function getEvaluatorNameMap() {
+  const map = new Map();
+  evaluators.forEach((evaluator) => {
+    map.set(evaluator.id, evaluator.name ?? evaluator.id);
+  });
+  return map;
+}
+
+function openMemoModal() {
+  memoModal.classList.remove("memo-modal-hidden");
+}
+
+function closeMemoModal() {
+  memoModal.classList.add("memo-modal-hidden");
+}
+
+async function showParticipantMemos(participantId, participantName) {
+  memoModalTitle.textContent = `${participantName} 메모`;
+  memoModalList.innerHTML = "";
+
+  try {
+    const notesQuery = query(
+      collection(db, "notes"),
+      where("participant_id", "==", participantId),
+      where("round_id", "==", activeRound.id)
+    );
+    const notesSnapshot = await getDocs(notesQuery);
+    const evaluatorNameMap = getEvaluatorNameMap();
+
+    const noteRows = notesSnapshot.docs
+      .map((noteDoc) => ({ id: noteDoc.id, ...noteDoc.data() }))
+      .map((note) => ({
+        evaluatorName: evaluatorNameMap.get(note.evaluator_id) ?? note.evaluator_id,
+        memo: String(note.memo ?? "").trim(),
+      }))
+      .filter((note) => note.memo.length > 0)
+      .sort((left, right) => left.evaluatorName.localeCompare(right.evaluatorName, "ko"));
+
+    if (noteRows.length === 0) {
+      const emptyItem = document.createElement("li");
+      emptyItem.className = "memo-empty";
+      emptyItem.textContent = "메모 없음";
+      memoModalList.appendChild(emptyItem);
+      openMemoModal();
+      return;
+    }
+
+    noteRows.forEach((row) => {
+      const item = document.createElement("li");
+      item.className = "memo-item";
+      item.innerHTML = `<strong>${row.evaluatorName}</strong><p>${row.memo}</p>`;
+      memoModalList.appendChild(item);
+    });
+    openMemoModal();
+  } catch (error) {
+    memoModalList.innerHTML = "";
+    const errorItem = document.createElement("li");
+    errorItem.className = "memo-empty";
+    errorItem.textContent = `메모 조회 실패: ${error.message}`;
+    memoModalList.appendChild(errorItem);
+    openMemoModal();
+  }
 }
 
 function renderEmptyBody(text) {
@@ -184,6 +253,15 @@ function renderTable() {
           ${criteriaCells}
           <td><strong>${row.total}</strong></td>
           <td>${row.submissionText}</td>
+          <td>
+            <button
+              type="button"
+              class="memo-open-button"
+              data-participant-id="${row.participant.id}"
+              data-participant-name="${row.participant.name}"
+              aria-label="메모 보기"
+            >📝</button>
+          </td>
         </tr>
       `;
     })
@@ -348,6 +426,36 @@ lockToggleButton.addEventListener("click", async () => {
 logoutButton.addEventListener("click", () => {
   sessionStorage.clear();
   window.location.href = "./login.html";
+});
+
+resultTableBodyElement.addEventListener("click", async (event) => {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) {
+    return;
+  }
+
+  const button = target.closest(".memo-open-button");
+  if (!(button instanceof HTMLButtonElement)) {
+    return;
+  }
+
+  const participantId = button.dataset.participantId;
+  const participantName = button.dataset.participantName ?? "참가자";
+  if (!participantId || !activeRound) {
+    return;
+  }
+
+  await showParticipantMemos(participantId, participantName);
+});
+
+memoModalCloseButton.addEventListener("click", () => {
+  closeMemoModal();
+});
+
+memoModal.addEventListener("click", (event) => {
+  if (event.target === memoModal) {
+    closeMemoModal();
+  }
 });
 
 init().catch((error) => {
