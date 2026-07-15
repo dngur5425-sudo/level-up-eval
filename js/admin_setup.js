@@ -38,6 +38,12 @@ const participantList = document.getElementById("participantList");
 const criteriaList = document.getElementById("criteriaList");
 const evaluatorList = document.getElementById("evaluatorList");
 const assignmentList = document.getElementById("assignmentList");
+const participantPrevButton = document.getElementById("participantPrevButton");
+const participantNextButton = document.getElementById("participantNextButton");
+const participantPageInfo = document.getElementById("participantPageInfo");
+const evaluatorPrevButton = document.getElementById("evaluatorPrevButton");
+const evaluatorNextButton = document.getElementById("evaluatorNextButton");
+const evaluatorPageInfo = document.getElementById("evaluatorPageInfo");
 
 const roundMessage = document.getElementById("roundMessage");
 const groupMessage = document.getElementById("groupMessage");
@@ -50,6 +56,11 @@ const roundsById = new Map();
 const groupsById = new Map();
 const evaluatorsById = new Map();
 let assignmentRecords = [];
+const LIST_PAGE_SIZE = 10;
+let participantRecords = [];
+let evaluatorRecords = [];
+let participantCurrentPage = 1;
+let evaluatorCurrentPage = 1;
 
 function setMessage(element, text, type) {
   element.textContent = text;
@@ -102,6 +113,113 @@ function renderEmpty(listElement, text) {
   empty.className = "data-list-empty";
   empty.textContent = text;
   listElement.appendChild(empty);
+}
+
+function calculatePagination(totalItems, currentPage) {
+  if (totalItems === 0) {
+    return {
+      totalPages: 0,
+      safePage: 0,
+      startIndex: 0,
+      endIndex: 0,
+    };
+  }
+
+  const totalPages = Math.ceil(totalItems / LIST_PAGE_SIZE);
+  const safePage = Math.min(Math.max(currentPage, 1), totalPages);
+  const startIndex = (safePage - 1) * LIST_PAGE_SIZE;
+  const endIndex = startIndex + LIST_PAGE_SIZE;
+
+  return {
+    totalPages,
+    safePage,
+    startIndex,
+    endIndex,
+  };
+}
+
+function updatePaginationControls(prevButton, nextButton, infoElement, currentPage, totalPages) {
+  if (totalPages === 0) {
+    prevButton.disabled = true;
+    nextButton.disabled = true;
+    infoElement.textContent = "0 / 0페이지";
+    return;
+  }
+
+  prevButton.disabled = currentPage <= 1;
+  nextButton.disabled = currentPage >= totalPages;
+  infoElement.textContent = `${currentPage} / ${totalPages}페이지`;
+}
+
+function renderParticipantList() {
+  participantList.innerHTML = "";
+
+  const { totalPages, safePage, startIndex, endIndex } = calculatePagination(
+    participantRecords.length,
+    participantCurrentPage
+  );
+
+  participantCurrentPage = safePage;
+  updatePaginationControls(
+    participantPrevButton,
+    participantNextButton,
+    participantPageInfo,
+    participantCurrentPage,
+    totalPages
+  );
+
+  if (participantRecords.length === 0) {
+    renderEmpty(participantList, "등록된 참가자가 없습니다.");
+    return;
+  }
+
+  participantRecords.slice(startIndex, endIndex).forEach((participantRecord) => {
+    const participant = participantRecord.data;
+    const groupName = groupsById.get(participant.group_id)?.name ?? "알 수 없음";
+
+    const item = createListItem(
+      `${participant.name} | 조: ${groupName} | 발표순번: ${participant.order}`,
+      async () => {
+        await deleteDoc(doc(db, "participants", participantRecord.id));
+      }
+    );
+    participantList.appendChild(item);
+  });
+}
+
+function renderEvaluatorList() {
+  evaluatorList.innerHTML = "";
+
+  const { totalPages, safePage, startIndex, endIndex } = calculatePagination(
+    evaluatorRecords.length,
+    evaluatorCurrentPage
+  );
+
+  evaluatorCurrentPage = safePage;
+  updatePaginationControls(
+    evaluatorPrevButton,
+    evaluatorNextButton,
+    evaluatorPageInfo,
+    evaluatorCurrentPage,
+    totalPages
+  );
+
+  if (evaluatorRecords.length === 0) {
+    renderEmpty(evaluatorList, "등록된 평가자가 없습니다.");
+    return;
+  }
+
+  evaluatorRecords.slice(startIndex, endIndex).forEach((evaluatorRecord) => {
+    const evaluator = evaluatorRecord.data;
+
+    const item = createListItem(
+      `${evaluator.name} | 사번: ${evaluator.employee_id}`,
+      async () => {
+        await deleteDoc(doc(db, "evaluators", evaluatorRecord.id));
+      }
+    );
+    evaluatorList.appendChild(item);
+  });
 }
 
 function renderAssignmentGroupOptions() {
@@ -188,7 +306,7 @@ function bindRoundList() {
     snapshot.forEach((roundDoc) => {
       const round = roundDoc.data();
       roundsById.set(roundDoc.id, round);
-      roundOptions.push({ id: roundDoc.id, label: `${round.name} (${roundDoc.id})` });
+      roundOptions.push({ id: roundDoc.id, label: `${round.name}` });
 
       const item = createListItem(`${round.name}`, async () => {
         await deleteDoc(doc(db, "rounds", roundDoc.id));
@@ -242,25 +360,18 @@ function bindGroupList() {
 function bindParticipantList() {
   const participantsQuery = query(collection(db, "participants"), orderBy("order"));
   onSnapshot(participantsQuery, (snapshot) => {
-    participantList.innerHTML = "";
+    participantRecords = snapshot.docs.map((participantDoc) => ({
+      id: participantDoc.id,
+      data: participantDoc.data(),
+    }));
 
-    if (snapshot.empty) {
-      renderEmpty(participantList, "등록된 참가자가 없습니다.");
-      return;
+    const { totalPages } = calculatePagination(participantRecords.length, participantCurrentPage);
+    participantCurrentPage = totalPages === 0 ? 0 : Math.min(Math.max(participantCurrentPage, 1), totalPages);
+    if (participantCurrentPage === 0 && participantRecords.length > 0) {
+      participantCurrentPage = 1;
     }
 
-    snapshot.forEach((participantDoc) => {
-      const participant = participantDoc.data();
-      const groupName = groupsById.get(participant.group_id)?.name ?? "알 수 없음";
-
-      const item = createListItem(
-        `${participant.name} | 조: ${groupName} | 발표순번: ${participant.order}`,
-        async () => {
-          await deleteDoc(doc(db, "participants", participantDoc.id));
-        }
-      );
-      participantList.appendChild(item);
-    });
+    renderParticipantList();
   });
 }
 
@@ -293,10 +404,11 @@ function bindEvaluatorList() {
   const evaluatorsQuery = query(collection(db, "evaluators"), orderBy("name"));
   onSnapshot(evaluatorsQuery, (snapshot) => {
     evaluatorsById.clear();
-    evaluatorList.innerHTML = "";
+    evaluatorRecords = [];
 
     if (snapshot.empty) {
-      renderEmpty(evaluatorList, "등록된 평가자가 없습니다.");
+      evaluatorCurrentPage = 0;
+      renderEvaluatorList();
       renderSelectOptions(assignmentEvaluatorIdSelect, [], "먼저 평가자를 등록하세요");
       renderAssignmentList();
       return;
@@ -308,19 +420,62 @@ function bindEvaluatorList() {
       const evaluator = evaluatorDoc.data();
       evaluatorsById.set(evaluatorDoc.id, evaluator);
       evaluatorOptions.push({ id: evaluatorDoc.id, label: `${evaluator.name} (${evaluator.employee_id})` });
-      const item = createListItem(
-        `${evaluator.name} | 사번: ${evaluator.employee_id}`,
-        async () => {
-          await deleteDoc(doc(db, "evaluators", evaluatorDoc.id));
-        }
-      );
-      evaluatorList.appendChild(item);
+      evaluatorRecords.push({
+        id: evaluatorDoc.id,
+        data: evaluator,
+      });
     });
+
+    const { totalPages } = calculatePagination(evaluatorRecords.length, evaluatorCurrentPage);
+    evaluatorCurrentPage = totalPages === 0 ? 0 : Math.min(Math.max(evaluatorCurrentPage, 1), totalPages);
+    if (evaluatorCurrentPage === 0 && evaluatorRecords.length > 0) {
+      evaluatorCurrentPage = 1;
+    }
+
+    renderEvaluatorList();
 
     renderSelectOptions(assignmentEvaluatorIdSelect, evaluatorOptions, "평가자를 선택하세요");
     renderAssignmentList();
   });
 }
+
+participantPrevButton.addEventListener("click", () => {
+  if (participantCurrentPage <= 1) {
+    return;
+  }
+
+  participantCurrentPage -= 1;
+  renderParticipantList();
+});
+
+participantNextButton.addEventListener("click", () => {
+  const { totalPages } = calculatePagination(participantRecords.length, participantCurrentPage);
+  if (participantCurrentPage >= totalPages) {
+    return;
+  }
+
+  participantCurrentPage += 1;
+  renderParticipantList();
+});
+
+evaluatorPrevButton.addEventListener("click", () => {
+  if (evaluatorCurrentPage <= 1) {
+    return;
+  }
+
+  evaluatorCurrentPage -= 1;
+  renderEvaluatorList();
+});
+
+evaluatorNextButton.addEventListener("click", () => {
+  const { totalPages } = calculatePagination(evaluatorRecords.length, evaluatorCurrentPage);
+  if (evaluatorCurrentPage >= totalPages) {
+    return;
+  }
+
+  evaluatorCurrentPage += 1;
+  renderEvaluatorList();
+});
 
 function bindAssignmentList() {
   onSnapshot(collection(db, "assignments"), (snapshot) => {
