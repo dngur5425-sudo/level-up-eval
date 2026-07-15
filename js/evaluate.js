@@ -18,6 +18,7 @@ if (!evaluatorId) {
 }
 
 const statusElement = document.getElementById("status");
+const logoutButton = document.getElementById("logoutButton");
 const roundNameElement = document.getElementById("roundName");
 const groupNameElement = document.getElementById("groupName");
 const participantNameElement = document.getElementById("participantName");
@@ -31,6 +32,11 @@ const formMessageElement = document.getElementById("formMessage");
 const prevButton = document.getElementById("prevButton");
 const nextButton = document.getElementById("nextButton");
 const submitButton = document.getElementById("submitButton");
+
+logoutButton.addEventListener("click", () => {
+  sessionStorage.clear();
+  window.location.href = "./login.html";
+});
 
 let activeRound = null;
 let criteriaItems = [];

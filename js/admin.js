@@ -17,6 +17,7 @@ if (sessionStorage.getItem("login_role") !== "admin") {
 const statusElement = document.getElementById("status");
 const currentRoundNameElement = document.getElementById("currentRoundName");
 const lockToggleButton = document.getElementById("lockToggleButton");
+const logoutButton = document.getElementById("logoutButton");
 const groupTabsElement = document.getElementById("groupTabs");
 const selectedGroupTitleElement = document.getElementById("selectedGroupTitle");
 const resultTableHeadElement = document.getElementById("resultTableHead");
@@ -342,6 +343,11 @@ lockToggleButton.addEventListener("click", async () => {
   } finally {
     lockToggleButton.disabled = false;
   }
+});
+
+logoutButton.addEventListener("click", () => {
+  sessionStorage.clear();
+  window.location.href = "./login.html";
 });
 
 init().catch((error) => {
