@@ -8,6 +8,7 @@ import {
   orderBy,
   query,
   setDoc,
+  writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
 const roundForm = document.getElementById("roundForm");
@@ -308,9 +309,49 @@ function bindRoundList() {
       roundsById.set(roundDoc.id, round);
       roundOptions.push({ id: roundDoc.id, label: `${round.name}` });
 
-      const item = createListItem(`${round.name}`, async () => {
+      const item = document.createElement("li");
+      item.className = "data-list-item";
+
+      const textSpan = document.createElement("span");
+      textSpan.textContent = `${round.name} - ${round.status ?? "대기"}`;
+
+      const actionWrap = document.createElement("div");
+      actionWrap.className = "list-actions";
+
+      const activateButton = document.createElement("button");
+      activateButton.type = "button";
+      activateButton.className = "list-action-button";
+      activateButton.textContent = "진행중으로 전환";
+      activateButton.disabled = round.status === "진행중";
+      activateButton.addEventListener("click", async () => {
+        try {
+          const batch = writeBatch(db);
+
+          snapshot.forEach((targetRoundDoc) => {
+            batch.update(doc(db, "rounds", targetRoundDoc.id), {
+              status: targetRoundDoc.id === roundDoc.id ? "진행중" : "대기",
+            });
+          });
+
+          await batch.commit();
+          setMessage(roundMessage, `${round.name} 라운드를 진행중으로 전환했습니다.`, "success");
+        } catch (error) {
+          setMessage(roundMessage, `라운드 상태 변경 실패: ${error.message}`, "error");
+        }
+      });
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.className = "danger-button";
+      deleteButton.textContent = "삭제";
+      deleteButton.addEventListener("click", async () => {
         await deleteDoc(doc(db, "rounds", roundDoc.id));
       });
+
+      actionWrap.appendChild(activateButton);
+      actionWrap.appendChild(deleteButton);
+      item.appendChild(textSpan);
+      item.appendChild(actionWrap);
       roundList.appendChild(item);
     });
 
