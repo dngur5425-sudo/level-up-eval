@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 | 신입사원 레벨업 평가웹앱</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>로그인</h1>
+    <p id="status">평가자 또는 관리자로 로그인하세요.</p>
+
+    <section class="panel">
+      <div class="tab-row" role="tablist" aria-label="로그인 유형 선택">
+        <button id="evaluatorTab" class="tab-button active" type="button" role="tab" aria-selected="true">평가자</button>
+        <button id="adminTab" class="tab-button" type="button" role="tab" aria-selected="false">관리자</button>
+      </div>
+
+      <form id="evaluatorForm" class="login-form" autocomplete="off">
+        <label class="field" for="evaluatorName">이름(ID)</label>
+        <input id="evaluatorName" type="text" placeholder="이름 입력" required>
+
+        <label class="field" for="employeeId">사번(PW)</label>
+        <input id="employeeId" type="password" placeholder="사번 입력" required>
+
+        <button id="evaluatorLoginButton" type="submit">평가자 로그인</button>
+      </form>
+
+      <form id="adminForm" class="login-form hidden" autocomplete="off">
+        <label class="field" for="adminPassword">관리자 비밀번호</label>
+        <input id="adminPassword" type="password" placeholder="관리자 비밀번호 입력" required>
+
+        <button id="adminLoginButton" type="submit">관리자 로그인</button>
+      </form>
+
+      <p id="loginMessage"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./js/login.js"></script>
+</body>
+</html>

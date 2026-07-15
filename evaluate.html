@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>평가 입력 | 신입사원 레벨업 평가웹앱</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>평가 입력</h1>
+    <p id="status">데이터를 불러오는 중...</p>
+
+    <section class="panel">
+      <div class="meta-row">
+        <div class="meta-item"><strong>라운드:</strong> <span id="roundName">-</span></div>
+        <div class="meta-item"><strong>조:</strong> <span id="groupName">-</span></div>
+      </div>
+      <div class="meta-row">
+        <div class="meta-item"><strong>참가자:</strong> <span id="participantName">-</span></div>
+        <div class="meta-item"><strong>순번:</strong> <span id="participantOrder">-</span></div>
+        <div class="meta-item"><strong>진행:</strong> <span id="progressText">-</span></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>평가 항목</h2>
+      <div id="criteriaContainer" class="criteria-container"></div>
+
+      <label class="field" for="memoInput">메모 (선택)</label>
+      <textarea id="memoInput" rows="4" placeholder="발표자 메모를 입력하세요"></textarea>
+
+      <p id="totalScore" class="total-score">합계: 0점</p>
+      <p id="submissionState" class="form-message"></p>
+      <p id="formMessage" class="form-message"></p>
+
+      <div class="button-row">
+        <button id="prevButton" type="button">이전</button>
+        <button id="submitButton" type="button">제출하기</button>
+        <button id="nextButton" type="button">다음</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/evaluate.js"></script>
+</body>
+</html>

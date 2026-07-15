@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 대시보드 | 신입사원 레벨업 평가웹앱</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>관리자 대시보드</h1>
+    <p><a class="nav-link" href="./admin_setup.html">데이터 관리</a></p>
+    <p id="status">대시보드 데이터를 불러오는 중...</p>
+
+    <section class="panel">
+      <div class="meta-row">
+        <div class="meta-item"><strong>현재 라운드:</strong> <span id="currentRoundName">-</span></div>
+      </div>
+      <button id="lockToggleButton" type="button">채점 마감</button>
+      <div id="groupTabs" class="tab-row"></div>
+    </section>
+
+    <section class="panel">
+      <h2 id="selectedGroupTitle">조 결과</h2>
+      <div class="table-wrap">
+        <table class="result-table">
+          <thead id="resultTableHead"></thead>
+          <tbody id="resultTableBody"></tbody>
+        </table>
+      </div>
+      <p id="tableMessage" class="form-message"></p>
+    </section>
+  </main>
+
+  <script type="module" src="./js/admin.js"></script>
+</body>
+</html>

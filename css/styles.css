@@ -1,0 +1,310 @@
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f5f7fb;
+  color: #1f2937;
+}
+
+.container {
+  max-width: 720px;
+  margin: 80px auto;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 1.75rem;
+}
+
+#status {
+  margin: 0;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.panel {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+}
+
+.field {
+  display: block;
+  margin: 10px 0 6px;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: #ffffff;
+}
+
+button {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+#resultMessage {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+#resultMessage.pending {
+  color: #1d4ed8;
+}
+
+#resultMessage.success {
+  color: #15803d;
+}
+
+#resultMessage.error {
+  color: #b91c1c;
+}
+
+.tab-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.tab-button {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+
+.tab-button.active {
+  background: #0668e1;
+  color: #ffffff;
+}
+
+.login-form {
+  margin-top: 8px;
+}
+
+.hidden {
+  display: none;
+}
+
+#loginMessage {
+  margin-top: 12px;
+  font-size: 0.95rem;
+}
+
+#loginMessage.pending {
+  color: #1d4ed8;
+}
+
+#loginMessage.success {
+  color: #15803d;
+}
+
+#loginMessage.error {
+  color: #b91c1c;
+}
+
+.setup-form {
+  margin-top: 10px;
+}
+
+.form-message {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+.form-message.success {
+  color: #15803d;
+}
+
+.form-message.error {
+  color: #b91c1c;
+}
+
+.data-list {
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.data-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.data-list-empty {
+  padding: 10px 12px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  color: #64748b;
+}
+
+.danger-button {
+  margin-top: 0;
+  background: #b91c1c;
+  flex-shrink: 0;
+}
+
+textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+.meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.meta-item {
+  font-size: 0.95rem;
+}
+
+.criteria-container {
+  display: grid;
+  gap: 12px;
+}
+
+.criteria-item {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 12px;
+  background: #ffffff;
+}
+
+.criteria-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.criteria-value {
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.criteria-slider {
+  width: 100%;
+  margin: 0;
+}
+
+.total-score {
+  margin: 14px 0 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.button-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.result-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  min-width: 640px;
+}
+
+.result-table th,
+.result-table td {
+  border: 1px solid #e2e8f0;
+  padding: 10px 8px;
+  text-align: left;
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.result-table th {
+  background: #f8fafc;
+  color: #0f172a;
+}
+
+.table-empty {
+  text-align: center;
+  color: #64748b;
+}
+
+.nav-link {
+  color: #0668e1;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.checkbox-item input {
+  width: auto;
+  margin: 0;
+}

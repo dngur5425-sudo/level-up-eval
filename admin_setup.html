@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 설정 | 신입사원 레벨업 평가웹앱</title>
+  <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+  <main class="container">
+    <h1>관리자 설정</h1>
+    <p id="status">아래 폼으로 데이터 등록/삭제를 관리하세요.</p>
+
+    <section class="panel">
+      <h2>1) 라운드 등록</h2>
+      <form id="roundForm" class="setup-form">
+        <label class="field" for="roundName">라운드 이름</label>
+        <select id="roundName" required>
+          <option value="예선">예선</option>
+          <option value="본선">본선</option>
+        </select>
+        <button type="submit">라운드 등록</button>
+      </form>
+      <p id="roundMessage" class="form-message"></p>
+      <ul id="roundList" class="data-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>2) 조 등록</h2>
+      <form id="groupForm" class="setup-form">
+        <label class="field" for="groupRoundId">라운드 선택</label>
+        <select id="groupRoundId" required></select>
+
+        <label class="field" for="groupName">조 이름</label>
+        <input id="groupName" type="text" placeholder="예: 1조" required>
+        <button type="submit">조 등록</button>
+      </form>
+      <p id="groupMessage" class="form-message"></p>
+      <ul id="groupList" class="data-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>3) 참가자 등록</h2>
+      <form id="participantForm" class="setup-form">
+        <label class="field" for="participantGroupId">조 선택</label>
+        <select id="participantGroupId" required></select>
+
+        <label class="field" for="participantName">이름</label>
+        <input id="participantName" type="text" placeholder="참가자 이름" required>
+
+        <label class="field" for="participantOrder">발표순번</label>
+        <input id="participantOrder" type="number" min="1" step="1" placeholder="예: 1" required>
+        <button type="submit">참가자 등록</button>
+      </form>
+      <p id="participantMessage" class="form-message"></p>
+      <ul id="participantList" class="data-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>4) 평가 항목 등록</h2>
+      <form id="criteriaForm" class="setup-form">
+        <label class="field" for="criteriaRoundId">라운드 선택</label>
+        <select id="criteriaRoundId" required></select>
+
+        <label class="field" for="criteriaName">항목명</label>
+        <input id="criteriaName" type="text" placeholder="예: 전달력" required>
+
+        <label class="field" for="criteriaMaxScore">배점</label>
+        <input id="criteriaMaxScore" type="number" min="1" step="1" placeholder="예: 10" required>
+        <button type="submit">평가 항목 등록</button>
+      </form>
+      <p id="criteriaMessage" class="form-message"></p>
+      <ul id="criteriaList" class="data-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>5) 평가자 등록</h2>
+      <form id="evaluatorForm" class="setup-form">
+        <label class="field" for="evaluatorName">이름</label>
+        <input id="evaluatorName" type="text" placeholder="평가자 이름" required>
+
+        <label class="field" for="evaluatorEmployeeId">사번</label>
+        <input id="evaluatorEmployeeId" type="text" placeholder="사번" required>
+        <button type="submit">평가자 등록</button>
+      </form>
+      <p id="evaluatorMessage" class="form-message"></p>
+      <ul id="evaluatorList" class="data-list"></ul>
+    </section>
+
+    <section class="panel">
+      <h2>6) 평가자-조 배정</h2>
+      <form id="assignmentForm" class="setup-form">
+        <label class="field" for="assignmentEvaluatorId">평가자 선택</label>
+        <select id="assignmentEvaluatorId" required></select>
+
+        <label class="field" for="assignmentRoundId">라운드 선택</label>
+        <select id="assignmentRoundId" required></select>
+
+        <p class="field">조 선택 (다중 선택 가능)</p>
+        <div id="assignmentGroupsContainer" class="checkbox-grid"></div>
+
+        <button type="submit">배정 등록</button>
+      </form>
+      <p id="assignmentMessage" class="form-message"></p>
+      <ul id="assignmentList" class="data-list"></ul>
+    </section>
+  </main>
+
+  <script type="module" src="./js/admin_setup.js"></script>
+</body>
+</html>

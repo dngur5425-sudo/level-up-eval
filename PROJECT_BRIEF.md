@@ -67,6 +67,11 @@ notes/{noteId}          // 선택 사항
   - round_id: string
   - memo: string
   - updated_at: timestamp
+
+assignments/{assignmentId}  // 예선 전용 - 평가자별 담당 조 배정
+  - evaluator_id: string
+  - round_id: string
+  - group_id: string
 ```
 
 ---
@@ -80,6 +85,8 @@ notes/{noteId}          // 선택 사항
 - 로그인 성공 시 `sessionStorage`에 evaluator_id 저장 (새로고침해도 유지, 탭 닫으면 초기화)
 
 ### 3.2 평가 입력 화면 (평가자용)
+- **예선의 경우 로그인한 evaluator_id가 assignments 컬렉션에서 배정받은 group_id(들)만 조회**해서, 그 조에 속한 participant만 순서대로 표시 (배정 없는 조는 아예 노출되지 않음)
+- **본선은 assignments 조회 없이 전체 참가자를 순서대로 표시** (조 구분이 없으므로)
 - 현재 라운드의 조 → 발표자 목록을 순서대로 표시, 이전/다음 버튼으로 이동
 - 각 발표자마다 `criteriaItems`를 슬라이더 또는 숫자 입력으로 표시
 - 하단에 합계 자동 계산 (프론트에서 실시간 합산)
@@ -102,6 +109,7 @@ notes/{noteId}          // 선택 사항
 ### 3.4 참가자/조/평가 항목 관리 (관리자)
 - 참가자 등록 폼 (이름, 조, 발표순번) — 인원이 적으므로 수동 입력 폼이면 충분, CSV 업로드는 선택
 - 평가 항목 등록 폼 (항목명, 배점) — 라운드별로 자유롭게 추가/수정/삭제
+- **평가자-조 배정 폼**: 평가자 선택 + 라운드 선택 + 조 선택(체크박스, 다중 선택 가능) → assignments 문서 생성. 한 명이 여러 조를 담당할 수도 있음
 
 ---
 
